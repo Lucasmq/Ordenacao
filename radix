@@ -1,57 +1,67 @@
-from math import log10
-from random import randint
-
 #! /usr/bin/python
 
-'''with open("/home/lmi-03/Documentos/Lucas/APA/example.in", "r") as f:
-    read_data = f.readlines()
-f.closed '''
-#listateste = ['3','5','0','2','1']
+from math import log10
+from random import randint
 import sys
 
-y = sys.argv[1]
-#print y
+def radixsort( aList ):
+  RADIX = 10
+  maxLength = False
+  tmp , placement = -1, 1
+ 
+  while not maxLength:
+    maxLength = True
+    # declare and initialize buckets
+    buckets = [list() for _ in range( RADIX )]
+ 
+    # split aList between lists
+    for  i in aList:
+      tmp = i / placement
+      buckets[tmp % RADIX].append( i )
+      if maxLength and tmp > 0:
+        maxLength = False
+ 
+    # empty lists into aList array
+    a = 0
+    for b in range( RADIX ):
+      buck = buckets[b]
+      for i in buck:
+        aList[a] = i
+        a += 1
+ 
+    # move to next digit
+    placement *= RADIX
+
+
 
 tamanho = input()
 x=[None]*tamanho
 
-for i in range(0,tamanho):
-	x[i] = input()
+for i in range(0,tamanho):		#	recebe os valores de entrada
+	 x[i] = input()
 
 
+minimo = min(x)			#	acha o menor valor do vetor
 
-def get_digit(number, base, pos):
-  return (number // base ** pos) % base
+if minimo < 0:
+	minimo = minimo*(-1)
 
-def prefix_sum(array):
-  for i in range(1, len(array)):
-    array[i] = array[i] + array[i-1]
-  return array
+for i in range(0,tamanho):		#	translacao do vetor
+	 x[i] = x[i]+minimo
 
-def radixsort(l, base=10):
-  passes = int(log10(max(l))+1)
-  output = [0] * len(l)
+maximo = max(x)
 
-  for pos in range(passes):
-    count = [0] * base
+digitos = len(str(maximo))
+if digitos <= 5: 
+	radixsort(x)	# chama a funcao
+else:
+	print "Deu ruim! Tamanho: "+str(digitos)
 
-    for i in l:
-      digit = get_digit(i, base, pos)
-      count[digit] +=1
+for i in range(0,tamanho):  	#	subtrai o o minimo de todos os valores do vetor
+	 x[i] = x[i]-minimo
 
-    count = prefix_sum(count)
+for i in xrange(0,len(x)):		#	imprime o vetor ordenado 
+	print	x[i]
 
-    for i in reversed(l):
-      digit = get_digit(i, base, pos)
-      count[digit] -= 1
-      new_pos = count[digit]
-      output[new_pos] = i
 
-    l = list(output)
-  return output
-
-#l = [ randint(1, 99999) for x in range(100) ]
-sorted = radixsort(x)
-for l in range(0,len(sorted)):
-	print sorted[l]
-#print sorted
+#print "Minimo: "+str(minimo)
